@@ -1,13 +1,31 @@
 package src;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class PlayGame {
+
+
+    public static void writeToFile(File f, int input) {
+        try {
+            FileWriter w = new FileWriter(f, true);
+            w.write("Total Minimax Explorations (No Alpha Beta Pruning): " + input + "\n");
+            w.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void main(String[] args) {
         AI AI = new AI();
         GameInstance gameInstance = new GameInstance();
         Scanner scanner = new Scanner(System.in);
+        File f = new File("src\\results.txt");
+
+        
+        gameInstance.clearScreen();
         System.out.println("Who goes first? (1) AI (2) Player");
         int choose = scanner.nextInt();
 
@@ -55,6 +73,8 @@ public class PlayGame {
             gameInstance.board[AI.returnBestMove().x][AI.returnBestMove().y] = 1;
             gameInstance.displayBoard();
         }
+
+        writeToFile(f, AI.TotalOperationsWithMinimax);
 
         if(gameInstance.isGameOver()){
             if(gameInstance.hasXWon()){

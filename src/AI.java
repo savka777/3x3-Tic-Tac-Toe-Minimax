@@ -1,5 +1,8 @@
 package src;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +12,8 @@ public class AI {
 
     List<Point> availablePoints;
     Map<Point, Integer> scoresToMoves;
+    static int TotalOperationsWithMinimax = 0;
+
 
     // Minimax
     public int returnMin(List<Integer> values) {
@@ -55,32 +60,42 @@ public class AI {
         miniMax(depth, player, g);
     }
 
-    public int miniMax(int depth, int player, GameInstance g){
+    public int miniMax(int depth, int player, GameInstance g) {
         // Utility function, Terminal State
-        if (g.hasXWon()) return 1; // Maximizer
-        if (g.hasOWon()) return -1; // Minimize
+        if (g.hasXWon()) {
+            return 1; // Maximizer
+        }
+
+        if (g.hasOWon()) {
+            return -1; // Minimize
+        }
 
         List<Point> availablePoints = new ArrayList<Point>();
         availablePoints = g.avalPoints();
-        if (availablePoints.isEmpty()) return 0; // Draw
+
+        if (availablePoints.isEmpty())
+            return 0; // Draw
 
         List<Integer> depthScore = new ArrayList<Integer>();
 
-        for(int i = 0; i < availablePoints.size(); i++){
+        for (int i = 0; i < availablePoints.size(); i++) {
             Point currentMove = availablePoints.get(i);
-            if(player == 1){ // AI
+
+            if (player == 1) { // AI
                 g.board[currentMove.x][currentMove.y] = 1;
-                int ScoreForThisMove = miniMax(depth+1,2, g);
+                TotalOperationsWithMinimax ++;
+                int ScoreForThisMove = miniMax(depth + 1, 2, g);
 
                 depthScore.add(ScoreForThisMove); // Will add when propogates back up
 
-                if(depth == 0){
-                 scoresToMoves.putIfAbsent(currentMove,ScoreForThisMove); // add final score for move
+                if (depth == 0) {
+                    scoresToMoves.putIfAbsent(currentMove, ScoreForThisMove); // add final score for move
                 }
-            }
-            else if(player == 2){ // Player
+            } else if (player == 2) { // Player
                 g.board[currentMove.x][currentMove.y] = 2;
-                depthScore.add(miniMax(depth+1, 1, g));
+                TotalOperationsWithMinimax++;
+                TotalOperationsWithMinimax += 1;
+                depthScore.add(miniMax(depth + 1, 1, g));
             }
 
             // reset board
