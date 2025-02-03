@@ -81,6 +81,8 @@ public class PlayGame {
                 System.out.println("AI Has Won, Sorry!");
             }else if(gameInstance.hasOWon()){
                 System.out.println("You beat the AI! Nice Job");
+            }else{
+                System.out.println("DRAW!");
             }
         }
     }
