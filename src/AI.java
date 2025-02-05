@@ -1,45 +1,12 @@
 package src;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class AI {
 
-    List<Point> availablePoints;
     Map<Point, Integer> scoresToMoves;
     static int TotalOperationsWithMinimax = 0;
-
-
-    // Minimax
-    public int returnMin(List<Integer> values) {
-        int MIN = Integer.MAX_VALUE;
-        int index = -1;
-
-        for (int i = 0; i < values.size(); i++) {
-            if (values.get(i) < MIN) {
-                MIN = values.get(i);
-                index = i;
-            }
-        }
-        return values.get(index);
-    }
-
-    public int returnMax(List<Integer> values) {
-        int MAX = Integer.MIN_VALUE;
-        int index = -1;
-        for (int i = 0; i < values.size(); i++) {
-            if (values.get(i) > MAX) {
-                MAX = values.get(i);
-                index = i;
-            }
-        }
-        return values.get(index);
-    }
 
     public Point returnBestMove() {
 
@@ -52,6 +19,7 @@ public class AI {
                 locationOfMaxPointPerMove = pair.getKey();
             }
         }
+        
         return locationOfMaxPointPerMove;
     }
 
@@ -62,47 +30,51 @@ public class AI {
 
     public int miniMax(int depth, int player, GameInstance g) {
         // Utility function, Terminal State
-        if (g.hasXWon()) {
-            return 1; // Maximizer
-        }
-
-        if (g.hasOWon()) {
-            return -1; // Minimize
-        }
-
-        List<Point> availablePoints = new ArrayList<Point>();
-        availablePoints = g.avalPoints();
-
-        if (availablePoints.isEmpty())
+        if (g.hasXWon())
+            return 1; // Maximizer WIN
+        if (g.hasOWon())
+            return -1; // Minimize WIN
+        if (g.avalPoints().isEmpty())
             return 0; // Draw
 
-        List<Integer> depthScore = new ArrayList<Integer>();
+        if (player == 1) {
 
-        for (int i = 0; i < availablePoints.size(); i++) {
-            Point currentMove = availablePoints.get(i);
+            int bestMaxScore = Integer.MIN_VALUE;
 
-            if (player == 1) { // AI
-                g.board[currentMove.x][currentMove.y] = 1;
-                TotalOperationsWithMinimax ++;
-                int ScoreForThisMove = miniMax(depth + 1, 2, g);
+            for (int i = 0; i < g.avalPoints().size(); i++) { // Iterate through available game positions
+                Point currentMove = g.avalPoints().get(i); // Get the current game move
+                g.board[currentMove.x][currentMove.y] = 1; // Place move on board
 
-                depthScore.add(ScoreForThisMove); // Will add when propogates back up
-
-                if (depth == 0) {
-                    scoresToMoves.putIfAbsent(currentMove, ScoreForThisMove); // add final score for move
-                }
-            } else if (player == 2) { // Player
-                g.board[currentMove.x][currentMove.y] = 2;
                 TotalOperationsWithMinimax++;
-                TotalOperationsWithMinimax += 1;
-                depthScore.add(miniMax(depth + 1, 1, g));
+                
+                int currentScore = miniMax(depth + 1, 2, g); // Get Score
+                g.board[currentMove.x][currentMove.y] = 0; // Reset Board from next Move
+                bestMaxScore = Math.max(currentScore, bestMaxScore); // Get Maximizing Value // Utility
+
+                if(depth == 0){
+                    scoresToMoves.putIfAbsent(currentMove, currentScore);
+                }
             }
+            return bestMaxScore;
 
-            // reset board
-            g.board[currentMove.x][currentMove.y] = 0;
+        } else {
+
+            int bestMinScore = Integer.MAX_VALUE;
+
+            for (int i = 0; i < g.avalPoints().size(); i++) {
+
+                Point currentMove = g.avalPoints().get(i);
+                g.board[currentMove.x][currentMove.y] = 2;
+                
+                TotalOperationsWithMinimax ++;
+                
+                int currentScore = miniMax(depth + 1, 1, g); // Get Score
+                g.board[currentMove.x][currentMove.y] = 0;
+                bestMinScore = Math.min(currentScore, bestMinScore); // Get Minimizing Value // Utility
+
+
+            }
+            return bestMinScore;
         }
-
-        // when we propogate back up, we need to know which score to pick
-        return player == 1 ? returnMax(depthScore) : returnMin(depthScore);
     }
 }
