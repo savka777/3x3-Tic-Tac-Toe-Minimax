@@ -5,13 +5,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class PlayGame {
+public class PlayGameWithPruning {
 
 
     public static void writeToFile(File f, int input) {
         try {
             FileWriter w = new FileWriter(f, true);
-            w.write("Total Minimax Explorations: " + input + "\n");
+            w.write("Total Minimax Explorations (With Alpha Beta Pruning): " + input + "\n");
             w.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -19,7 +19,7 @@ public class PlayGame {
     }
 
     public static void main(String[] args) {
-        AI AI = new AI();
+        AI_AlphaBetaPruning AI = new AI_AlphaBetaPruning();
         GameInstance gameInstance = new GameInstance();
         Scanner scanner = new Scanner(System.in);
         File f = new File("src\\results.txt");
@@ -30,7 +30,7 @@ public class PlayGame {
         int choose = scanner.nextInt();
 
         if(choose == 1){
-            AI.doMiniMax(0, 1, gameInstance);
+            AI.doMiniMax(0, 1, gameInstance, Integer.MIN_VALUE ,Integer.MIN_VALUE);
             gameInstance.board[AI.returnBestMove().x][AI.returnBestMove().y] = 1;
             gameInstance.displayBoard();
 
@@ -41,7 +41,7 @@ public class PlayGame {
             int y = scanner.nextInt()-1;
 
             gameInstance.board[x][y] = 2;
-            AI.doMiniMax(0, 1, gameInstance);
+            AI.doMiniMax(0, 1, gameInstance, Integer.MIN_VALUE ,Integer.MAX_VALUE);
             Point BestMove = AI.returnBestMove();
             gameInstance.board[BestMove.x][BestMove.y] = 1;
             gameInstance.displayBoard();
@@ -70,13 +70,13 @@ public class PlayGame {
                 break;
             }
 
-            AI.doMiniMax(0, 1, gameInstance);
+            AI.doMiniMax(0, 1, gameInstance, Integer.MIN_VALUE, Integer.MAX_VALUE);
             Point BestMove = AI.returnBestMove();
             gameInstance.board[BestMove.x][BestMove.y] = 1;
             gameInstance.displayBoard();
         }
 
-        writeToFile(f, AI.TotalOperationsMinimax);
+        writeToFile(f, AI.TotalOperationsWithAlphaBeta);
 
         if(gameInstance.isGameOver()){
             if(gameInstance.hasXWon()){
