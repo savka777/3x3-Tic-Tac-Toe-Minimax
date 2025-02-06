@@ -11,7 +11,7 @@ public class PlayGame {
     public static void writeToFile(File f, int input) {
         try {
             FileWriter w = new FileWriter(f, true);
-            w.write("Total Minimax Explorations (No Alpha Beta Pruning): " + input + "\n");
+            w.write("Total Minimax Explorations (With Alpha Beta Pruning): " + input + "\n");
             w.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -19,7 +19,7 @@ public class PlayGame {
     }
 
     public static void main(String[] args) {
-        AI AI = new AI();
+        AI_AlphaBetaPruning AI = new AI_AlphaBetaPruning();
         GameInstance gameInstance = new GameInstance();
         Scanner scanner = new Scanner(System.in);
         File f = new File("src\\results.txt");
@@ -30,7 +30,7 @@ public class PlayGame {
         int choose = scanner.nextInt();
 
         if(choose == 1){
-            AI.doMiniMax(0, 1, gameInstance);
+            AI.doMiniMax(0, 1, gameInstance, 0 , 0);
             gameInstance.board[AI.returnBestMove().x][AI.returnBestMove().y] = 1;
             gameInstance.displayBoard();
 
@@ -41,8 +41,9 @@ public class PlayGame {
             int y = scanner.nextInt()-1;
 
             gameInstance.board[x][y] = 2;
-            AI.doMiniMax(0, 1, gameInstance);
-            gameInstance.board[AI.returnBestMove().x][AI.returnBestMove().y] = 1;
+            AI.doMiniMax(0, 1, gameInstance, Integer.MIN_VALUE ,Integer.MAX_VALUE);
+            Point BestMove = AI.returnBestMove();
+            gameInstance.board[BestMove.x][BestMove.y] = 1;
             gameInstance.displayBoard();
 
         }
@@ -53,7 +54,7 @@ public class PlayGame {
             System.out.println("Press For COL (1,2 or 3)");
             int y = scanner.nextInt()-1;
             
-            // Can place on points that are already on the board
+            // Can place on points that are not empty // FIX INDEX OUT BOUND X = 10, etc.
             while(gameInstance.board[x][y] != 0){
                 System.out.println("Wrong Move, Please Try Again ");
                 System.out.println("Press For ROW (1,2 or 3)");
@@ -69,20 +70,25 @@ public class PlayGame {
                 break;
             }
 
-            AI.doMiniMax(0, 1, gameInstance);
-            gameInstance.board[AI.returnBestMove().x][AI.returnBestMove().y] = 1;
+            AI.doMiniMax(0, 1, gameInstance, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            Point BestMove = AI.returnBestMove();
+            gameInstance.board[BestMove.x][BestMove.y] = 1;
             gameInstance.displayBoard();
         }
 
-        writeToFile(f, AI.TotalOperationsWithMinimax);
+        writeToFile(f, AI.TotalOperationsWithAlphaBeta);
 
         if(gameInstance.isGameOver()){
             if(gameInstance.hasXWon()){
+                gameInstance.displayBoard();
                 System.out.println("AI Has Won, Sorry!");
             }else if(gameInstance.hasOWon()){
+                gameInstance.displayBoard();
                 System.out.println("You beat the AI! Nice Job");
             }else{
+                gameInstance.displayBoard();
                 System.out.println("DRAW!");
+
             }
         }
     }

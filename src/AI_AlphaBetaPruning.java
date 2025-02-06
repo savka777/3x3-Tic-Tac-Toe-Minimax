@@ -3,10 +3,10 @@ package src;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AI {
+public class AI_AlphaBetaPruning {
 
     Map<Point, Integer> scoresToMoves;
-    static int TotalOperationsMinimax = 0;
+    static int TotalOperationsWithAlphaBeta = 0;
 
     public Point returnBestMove() {
 
@@ -23,12 +23,12 @@ public class AI {
         return locationOfMaxPointPerMove;
     }
 
-    public void doMiniMax(int depth, int player, GameInstance g) {
+    public void doMiniMax(int depth, int player, GameInstance g , int alpha, int beta) {
         scoresToMoves = new HashMap<Point, Integer>();
-        miniMax(depth, player, g);
+        miniMax(depth, player, g, alpha, beta);
     }
 
-    public int miniMax(int depth, int player, GameInstance g) {
+    public int miniMax(int depth, int player, GameInstance g , int alpha, int beta) {
         // Utility function, Terminal State
         if (g.hasXWon())
             return 1; // Maximizer WIN
@@ -40,38 +40,50 @@ public class AI {
         if (player == 1) {
 
             int bestMaxScore = Integer.MIN_VALUE;
-
+            
             for (int i = 0; i < g.avalPoints().size(); i++) { // Iterate through available game positions
                 Point currentMove = g.avalPoints().get(i); // Get the current game move
                 g.board[currentMove.x][currentMove.y] = 1; // Place move on board
 
-                TotalOperationsMinimax++;
+                TotalOperationsWithAlphaBeta++;
                 
-                int currentScore = miniMax(depth + 1, 2, g); // Get Score
+                int currentScore = miniMax(depth + 1, 2, g, alpha, beta); // Get Score
                 g.board[currentMove.x][currentMove.y] = 0; // Reset Board from next Move
                 bestMaxScore = Math.max(currentScore, bestMaxScore); // Get Maximizing Value // Utility
+
+                alpha = Math.max(alpha, bestMaxScore);
 
                 if(depth == 0){
                     scoresToMoves.putIfAbsent(currentMove, currentScore);
                 }
+
+                if(alpha >= beta){
+                    break;
+                }
+                
             }
             return bestMaxScore;
 
         } else {
 
             int bestMinScore = Integer.MAX_VALUE;
-
+            
             for (int i = 0; i < g.avalPoints().size(); i++) {
 
                 Point currentMove = g.avalPoints().get(i);
                 g.board[currentMove.x][currentMove.y] = 2;
                 
-                TotalOperationsMinimax ++;
+                TotalOperationsWithAlphaBeta ++;
                 
-                int currentScore = miniMax(depth + 1, 1, g); // Get Score
+                int currentScore = miniMax(depth + 1, 1, g, alpha, beta); // Get Score
                 g.board[currentMove.x][currentMove.y] = 0;
                 bestMinScore = Math.min(currentScore, bestMinScore); // Get Minimizing Value // Utility
 
+                beta = Math.min(beta, bestMinScore); 
+
+                if(alpha >= beta){
+                    break;
+                }
 
             }
             return bestMinScore;
