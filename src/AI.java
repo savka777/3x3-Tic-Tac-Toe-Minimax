@@ -3,11 +3,19 @@ package src;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Implements Minimax algorithm.
+ */
 public class AI {
 
     Map<Point, Integer> scoresToMoves;
     static int TotalOperationsMinimax = 0;
 
+    /**
+     * Determines the best move based on the scores stored in the scoresToMoves map.
+     *
+     * @return The Point representing the best move.
+     */
     public Point returnBestMove() {
 
         int maxPointsPerMove = Integer.MIN_VALUE;
@@ -19,16 +27,31 @@ public class AI {
                 locationOfMaxPointPerMove = pair.getKey();
             }
         }
-        
+
         return locationOfMaxPointPerMove;
     }
 
-    public void doMiniMax(int depth, int player, GameInstance g) {
+    /**
+     * Initializes the scoresToMoves map and starts the Minimax algorithm.
+     *
+     * @param depth  The current depth in the game tree.
+     * @param player The current player (1 for maximizer, 2 for minimizer).
+     * @param g      The current game state.
+     */
+    public void doMiniMax(int depth, int player, GameState g) {
         scoresToMoves = new HashMap<Point, Integer>();
         miniMax(depth, player, g);
     }
 
-    public int miniMax(int depth, int player, GameInstance g) {
+    /**
+     * Compute the Minimax algorithm.
+     *
+     * @param depth  The current depth in the game tree.
+     * @param player The current player (1 for maximizer, 2 for minimizer).
+     * @param g      The current game state.
+     * @return The score of the best move for the current player.
+     */
+    public int miniMax(int depth, int player, GameState g) {
         // Utility function, Terminal State
         if (g.hasXWon())
             return 1; // Maximizer WIN
@@ -41,17 +64,17 @@ public class AI {
 
             int bestMaxScore = Integer.MIN_VALUE;
 
-            for (int i = 0; i < g.avalPoints().size(); i++) { // Iterate through available game positions
-                Point currentMove = g.avalPoints().get(i); // Get the current game move
-                g.board[currentMove.x][currentMove.y] = 1; // Place move on board
+            for (int i = 0; i < g.avalPoints().size(); i++) { // iterate through available game positions
+                Point currentMove = g.avalPoints().get(i); // get the current game move
+                g.board[currentMove.x][currentMove.y] = 1; // place move on board
 
                 TotalOperationsMinimax++;
-                
-                int currentScore = miniMax(depth + 1, 2, g); // Get Score
-                g.board[currentMove.x][currentMove.y] = 0; // Reset Board from next Move
-                bestMaxScore = Math.max(currentScore, bestMaxScore); // Get Maximizing Value // Utility
 
-                if(depth == 0){
+                int currentScore = miniMax(depth + 1, 2, g); // get Score
+                g.board[currentMove.x][currentMove.y] = 0; // reset board from next Move
+                bestMaxScore = Math.max(currentScore, bestMaxScore); // get maximizing value // utility
+
+                if (depth == 0) {
                     scoresToMoves.putIfAbsent(currentMove, currentScore);
                 }
             }
@@ -65,13 +88,12 @@ public class AI {
 
                 Point currentMove = g.avalPoints().get(i);
                 g.board[currentMove.x][currentMove.y] = 2;
-                
-                TotalOperationsMinimax ++;
-                
-                int currentScore = miniMax(depth + 1, 1, g); // Get Score
-                g.board[currentMove.x][currentMove.y] = 0;
-                bestMinScore = Math.min(currentScore, bestMinScore); // Get Minimizing Value // Utility
 
+                TotalOperationsMinimax++;
+
+                int currentScore = miniMax(depth + 1, 1, g); // get Score
+                g.board[currentMove.x][currentMove.y] = 0;
+                bestMinScore = Math.min(currentScore, bestMinScore); // get minimizing value // utility
 
             }
             return bestMinScore;

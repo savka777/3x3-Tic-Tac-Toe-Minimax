@@ -7,7 +7,6 @@ import java.util.Scanner;
 
 public class PlayGame {
 
-
     public static void writeToFile(File f, int input) {
         try {
             FileWriter w = new FileWriter(f, true);
@@ -20,25 +19,24 @@ public class PlayGame {
 
     public static void main(String[] args) {
         AI AI = new AI();
-        GameInstance gameInstance = new GameInstance();
+        GameState gameInstance = new GameState();
         Scanner scanner = new Scanner(System.in);
         File f = new File("src\\results.txt");
 
-        
         gameInstance.clearScreen();
         System.out.println("Who goes first? (1) AI (2) Player");
         int choose = scanner.nextInt();
 
-        if(choose == 1){
+        if (choose == 1) {
             AI.doMiniMax(0, 1, gameInstance);
             gameInstance.board[AI.returnBestMove().x][AI.returnBestMove().y] = 1;
             gameInstance.displayBoard();
 
-        }else if(choose == 2){
+        } else if (choose == 2) {
             System.out.println("Press For ROW (1,2 or 3)");
-            int x = scanner.nextInt()-1;
+            int x = scanner.nextInt() - 1;
             System.out.println("Press For COL (1,2 or 3)");
-            int y = scanner.nextInt()-1;
+            int y = scanner.nextInt() - 1;
 
             gameInstance.board[x][y] = 2;
             AI.doMiniMax(0, 1, gameInstance);
@@ -50,23 +48,23 @@ public class PlayGame {
 
         while (!gameInstance.isGameOver()) {
             System.out.println("Press For ROW (1,2 or 3)");
-            int x = scanner.nextInt()-1;
+            int x = scanner.nextInt() - 1;
             System.out.println("Press For COL (1,2 or 3)");
-            int y = scanner.nextInt()-1;
-            
+            int y = scanner.nextInt() - 1;
+
             // Can place on points that are not empty // FIX INDEX OUT BOUND X = 10, etc.
-            while(gameInstance.board[x][y] != 0){
+            while (gameInstance.board[x][y] != 0) {
                 System.out.println("Wrong Move, Please Try Again ");
                 System.out.println("Press For ROW (1,2 or 3)");
-                x = scanner.nextInt()-1;
+                x = scanner.nextInt() - 1;
                 System.out.println("Press For COL (1,2 or 3)");
-                y = scanner.nextInt()-1;
+                y = scanner.nextInt() - 1;
             }
 
             gameInstance.board[x][y] = 2; // place move on board
             // gameInstance.displayBoard();
 
-            if(gameInstance.isGameOver()){
+            if (gameInstance.isGameOver()) {
                 break;
             }
 
@@ -78,14 +76,14 @@ public class PlayGame {
 
         writeToFile(f, AI.TotalOperationsMinimax);
 
-        if(gameInstance.isGameOver()){
-            if(gameInstance.hasXWon()){
+        if (gameInstance.isGameOver()) {
+            if (gameInstance.hasXWon()) {
                 gameInstance.displayBoard();
                 System.out.println("AI Has Won, Sorry!");
-            }else if(gameInstance.hasOWon()){
+            } else if (gameInstance.hasOWon()) {
                 gameInstance.displayBoard();
                 System.out.println("You beat the AI! Nice Job");
-            }else{
+            } else {
                 gameInstance.displayBoard();
                 System.out.println("DRAW!");
 
@@ -93,6 +91,5 @@ public class PlayGame {
         }
     }
 }
-
 
 // when player places a move over the AI it should be
