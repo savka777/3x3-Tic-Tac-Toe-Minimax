@@ -75,7 +75,7 @@ public class AI {
                 bestMaxScore = Math.max(currentScore, bestMaxScore); // get maximizing value // utility
 
                 if (depth == 0) {
-                    scoresToMoves.putIfAbsent(currentMove, currentScore);
+                    scoresToMoves.put(currentMove, currentScore);
                 }
             }
             return bestMaxScore;

@@ -77,13 +77,13 @@ public class AI_AlphaBetaPruning {
                 TotalOperationsWithAlphaBeta++;
 
                 int currentScore = miniMax(depth + 1, 2, g, alpha, beta); // get Score
-                g.board[currentMove.x][currentMove.y] = 0; // reset Board from next Move
-                bestMaxScore = Math.max(currentScore, bestMaxScore); // get Maximizing Value // utility
+                g.board[currentMove.x][currentMove.y] = 0; // reset board from next Move
+                bestMaxScore = Math.max(currentScore, bestMaxScore); // get maximizing value // utility
 
                 alpha = Math.max(alpha, bestMaxScore); // update alpha
 
                 if (depth == 0) {
-                    scoresToMoves.putIfAbsent(currentMove, currentScore);
+                    scoresToMoves.put(currentMove, currentScore);
                 }
 
                 if (alpha >= beta) {

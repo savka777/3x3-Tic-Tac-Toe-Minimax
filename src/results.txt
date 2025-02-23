@@ -1,5 +1,5 @@
-Total Minimax Explorations: 558416
-Total Minimax Explorations (With Alpha Beta Pruning): 848
 
-Total Minimax Explorations (With Alpha Beta Pruning): 799
-Total Minimax Explorations (With Alpha Beta Pruning): 2462
+Total Minimax Explorations (With Alpha Beta Pruning): 2662
+Total Minimax Explorations (With Alpha Beta Pruning): 497
+Total Minimax Explorations (With Alpha Beta Pruning): 560
+Total Minimax Explorations (With Alpha Beta Pruning): 489

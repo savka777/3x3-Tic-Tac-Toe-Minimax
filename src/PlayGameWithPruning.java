@@ -52,7 +52,7 @@ public class PlayGameWithPruning {
             System.out.println("Press For COL (1,2 or 3)");
             int y = scanner.nextInt() - 1;
 
-            // Can place on points that are not empty // FIX INDEX OUT BOUND X = 10, etc.
+            // Cant place on points that are not empty // FIX INDEX OUT BOUND X = 10, etc.
             while (gameInstance.board[x][y] != 0) {
                 System.out.println("Wrong Move, Please Try Again ");
                 System.out.println("Press For ROW (1,2 or 3)");
@@ -62,7 +62,6 @@ public class PlayGameWithPruning {
             }
 
             gameInstance.board[x][y] = 2; // place move on board
-            // gameInstance.displayBoard();
 
             if (gameInstance.isGameOver()) {
                 break;
@@ -91,5 +90,3 @@ public class PlayGameWithPruning {
         }
     }
 }
-
-// when player places a move over the AI it should be
